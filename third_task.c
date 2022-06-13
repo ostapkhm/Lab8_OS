@@ -38,7 +38,7 @@ int get_words_amount(char *file_name){
 
     if(!file){
         printf("Failed to open this file!\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     int words_amount = 0;
@@ -59,7 +59,7 @@ int get_file_idx(unsigned int word_idx, char *file_name){
 
     if(!file){
         printf("Failed to open this file!\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     int words_amount = 0;
@@ -160,7 +160,7 @@ int main(int argc, char *argv[]) {
 
     if(argc != 5){
         printf("Invalid input! Usage - ./program file_name buffer_size producers_amount consumers_amount\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     else{
         file_name = argv[1];
@@ -197,6 +197,7 @@ int main(int argc, char *argv[]) {
 
         if(pthread_create(&th[i], NULL, &producer, &producers_struct[i]) != 0){
             perror("Failed to create producers' thread");
+            exit(EXIT_FAILURE);
         }
     }
 
@@ -204,12 +205,14 @@ int main(int argc, char *argv[]) {
     for(int i = producers_num; i < consumers_num + producers_num; i++){
         if(pthread_create(&th[i], NULL, &consumer, &th[i]) != 0){
             perror("Failed to create consumers' thread");
+            exit(EXIT_FAILURE);
         }
     }
 
     for(int i = 0; i < consumers_num + producers_num; i++){
         if(pthread_join(th[i], NULL) != 0){
             perror("Failed to join thread");
+            exit(EXIT_FAILURE);
         }
     }
 

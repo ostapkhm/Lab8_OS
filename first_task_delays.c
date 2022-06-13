@@ -37,7 +37,7 @@ int get_words_amount(char *file_name){
     FILE* file = fopen(file_name, "r");
 
     if(!file){
-        perror("Failed to open this file!\n");
+        printf("Failed to open this file!\n");
         exit(EXIT_FAILURE);
     }
 
@@ -58,7 +58,7 @@ int get_file_idx(unsigned int word_idx, char *file_name){
     FILE* file = fopen(file_name, "r");
 
     if(!file){
-        perror("Failed to open this file!\n");
+        printf("Failed to open this file!\n");
         exit(EXIT_FAILURE);
     }
 
@@ -112,6 +112,8 @@ void* producer(void *args) {
         count++;
         sem_post(&sem_lock);
         sem_post(&sem_full);
+
+        sleep(rand()%5);
     }
 
     fclose(file);
@@ -152,14 +154,17 @@ void* consumer(void *args) {
         printf("%s, TID - %ld\n", word, *tid);
         free(word);
         words_amount++;
+
+        sleep(rand()%5);
     }
 }
 
 int main(int argc, char *argv[]) {
+    srand(time(NULL));
     char *file_name;
 
     if(argc != 5){
-        printf("Invalid input! Usage - %s file_name buffer_size producers_amount consumers_amount\n", argv[0]);
+        printf("Invalid input! Usage - ./program file_name buffer_size producers_amount consumers_amount\n");
         exit(EXIT_FAILURE);
     }
     else{
